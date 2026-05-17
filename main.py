@@ -15,7 +15,7 @@ def random_fact():
         fact = random.choice(facts).strip()
         print(f"\n🌸 Случайный факт о Японии: {fact}\n")
     except FileNotFoundError:
-        print("\n Файл japan_facts.txt не найден. Создай его в той же папке с фактами (каждая строка - один факт).\n")
+        print("\nФайл japan_facts.txt не найден. Создай его в той же папке с фактами (каждая строка - один факт).\n")
 
 
 def download_wiki_page(city):
@@ -29,11 +29,11 @@ def download_wiki_page(city):
         filename = f"{city}.html"
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(response.text)
-        print(f" Страница сохранена в {filename}, ссылка на википедию -'https://ru.wikipedia.org/wiki/{city}'-")
+        print(f"Страница сохранена в {filename}, ссылка на википедию -'https://ru.wikipedia.org/wiki/{city}'-")
         time.sleep(1)
         return True
     except Exception as e:
-        print(f" Ошибка загрузки {city}: {e}")
+        print(f"Ошибка загрузки {city}: {e}")
         return False
 
 
@@ -83,7 +83,7 @@ def searchinjsonabzac(city):
         if download_wiki_page(city):
             extract_first_paragraph(city)
         else:
-            print("Не удалось скачать страницу. Ссылка на википедию -'https://ru.wikipedia.org/wiki/{city}'-")
+            print(f"Не удалось скачать страницу. Ссылка на википедию -'https://ru.wikipedia.org/wiki/{city}'-")
 
 
 def get_temperature(city):
@@ -91,9 +91,12 @@ def get_temperature(city):
         print("парсим...")
         link = f"https://wttr.in/{city}?format=%t&lang=ru"
         x = requests.get(link).text
+        if "location not found" in x.lower() or not x:
+            print(f"Ненашлось города |-> {city} <-| попробуйте скопировать название города и вставить")
+            return
         x = x.replace("°C", "")
         x = x.replace("Â", "")
-        print(f"В городе {city} {x} градусов 🌸 ☂︎")
+        print(f"В городе {city} {x} градусов 🌡️")
     except(requests.exceptions.RequestException) as e:
         print(f"Не удалось узнать погоду в {city} ошибка: '{e}'")
 
@@ -105,7 +108,7 @@ def get_daily_quote():
         response = requests.get(url)
         data = response.json()
         fact = data["data"][0]
-        print(f" Факт про кошек: {fact}")
+        print(f"Факт про кошек: {fact}")
     except:
         print("Ошибка")
 
@@ -120,7 +123,7 @@ menu = {
     "1": random_fact,
     "2": lambda: searchinjsonabzac(input("Введите название города или места (например, Токио, Осака, Киото, Гора Фудзи): ")),
     "3": get_daily_quote,
-    "4": lambda: get_temperature(input("Введите название города или места (например, Токио, Осака, Киото, Гора Фудзи): ")),
+    "4": lambda: get_temperature(input("Введите название города (например, Токио, Осака, Киото): ")),
     "0": exit_program
 }
 
@@ -130,11 +133,11 @@ def main():
         print("    ГИД ПО ЯПОНИИ ")
         print("🌸"*10)
         print("""
-1 - Случайный факт о Японии
-2 - Узнать о городе/месте (скачать + показать абзац)
-3 - Случайный факт про кошек
-4 - Погода в городе
-0 - Выход""")
+1 - Случайный факт о Японии⛩️
+2 - Узнать о городе/месте (скачать + показать абзац)🔍
+3 - Случайный факт про кошек🐱
+4 - Погода в городе🌦️
+0 - Выход💔""")
         choice = input("Твой выбор: ")
         if choice in menu:
             menu[choice]()   # вызываем выбранную функцию
