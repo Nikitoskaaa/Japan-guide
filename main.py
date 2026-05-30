@@ -6,7 +6,7 @@ import json
 from bs4 import BeautifulSoup
 
 abzaces = {}
-GITHUB_RAW_URL = "https://raw.githubusercontent.com/Nikitoskaaa/Japan-facts/refs/heads/main/japan_facts.txt"
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/GDKopat/Japan-facts/refs/heads/main/japan_facts.txt"
 
 def get_random_fact_from_github():
     try:
