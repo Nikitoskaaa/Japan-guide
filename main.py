@@ -6,16 +6,19 @@ import json
 from bs4 import BeautifulSoup
 
 abzaces = {}
+GITHUB_RAW_URL = "https://raw.githubusercontent.com/Nikitoskaaa/Japan-facts/refs/heads/main/japan_facts.txt"
 
-
-def random_fact():
+def get_random_fact_from_github():
     try:
-        with open('japan_facts.txt', 'r', encoding='utf-8') as f:
-            facts = f.readlines()
-        fact = random.choice(facts).strip()
+        response = requests.get(GITHUB_RAW_URL,timeout=10)
+        response.raise_for_status()
+        facts = response.text.strip().split("\n")
+        facts = [fact.strip() for fact in facts if fact.strip()]
+        fact = random.choice(facts)
         print(f"\n🌸 Случайный факт о Японии: {fact}\n")
-    except FileNotFoundError:
-        print("\nФайл japan_facts.txt не найден. Создай его в той же папке с фактами (каждая строка - один факт).\n")
+
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка соединения: {e}. Проверьте интернет или ссылку.")
 
 
 def download_wiki_page(city):
@@ -109,9 +112,8 @@ def get_daily_quote():
         data = response.json()
         fact = data["data"][0]
         print(f"Факт про кошек: {fact}")
-    except:
-        print("Ошибка")
-
+    except Exception as e:
+        print(f"Не удалось получить факт о кошках: {e}")
 
 
 def exit_program():
@@ -120,7 +122,7 @@ def exit_program():
 
 
 menu = {
-    "1": random_fact,
+    "1": get_random_fact_from_github,
     "2": lambda: searchinjsonabzac(input("Введите название города или места (например, Токио, Осака, Киото, Гора Фудзи): ")),
     "3": get_daily_quote,
     "4": lambda: get_temperature(input("Введите название города (например, Токио, Осака, Киото): ")),
@@ -141,7 +143,7 @@ def main():
         choice = input("Твой выбор: ")
         if choice in menu:
             menu[choice]()   # вызываем выбранную функцию
-        else:   
+        else:
             print("Некорректный ввод, попробуй ещё раз.")
 
 if __name__ == "__main__":
